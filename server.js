@@ -5,7 +5,7 @@ const fs = require('fs');
 const { readFromFile, readAndAppend } = require('./helpers/fsUtils');
 
 const app = express();
-const PORT = 3001;
+const PORT = 3002;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -16,7 +16,7 @@ app.get('/notes', (req, res) => {
     readFromFile('./db/db.json').then((data) => res.sendFile(path.join(__dirname, './public/notes.html')));
 });
 
-app.get('/api/notes', (req,res) => res.json(db));
+app.get('/api/notes', (req,res) => {readFromFile('./db/db.json').then((data) => res.json(JSON.parse(data)));});
 
 app.post('/api/notes', (req,res) => {
     res.json(`${req.method} request received to add a note`);
@@ -27,15 +27,7 @@ app.post('/api/notes', (req,res) => {
         title,
         text,
     };
-    fs.readFile('./db/db.json', 'utf8', (err, data) => {
-        if (err) {
-            console.error(err);
-        } else {
-            const parsedNotes = JSON.parse(data);
-            parsedNotes.push(newNote);
-            fs.writeFile('./db/db.json', JSON.stringify(parsedNotes, null, 4), (writeErr) => writeErr ? console.error(writeErr) : console.info('Successfully updated notes!'));
-        }
-    })
+    readAndAppend(newNote, './db/db.json');
 });
 
 app.get('*', (req, res) =>
