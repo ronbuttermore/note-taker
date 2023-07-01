@@ -3,6 +3,7 @@ const db = require('./db/db.json');
 const path = require('path');
 const fs = require('fs');
 const { readFromFile, readAndAppend } = require('./helpers/fsUtils');
+const uuid = require('./helpers/uuid');
 
 const app = express();
 const PORT = 3002;
@@ -26,6 +27,7 @@ app.post('/api/notes', (req,res) => {
     const newNote = {
         title,
         text,
+        id: uuid(),
     };
     readAndAppend(newNote, './db/db.json');
 });
