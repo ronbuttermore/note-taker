@@ -6,7 +6,7 @@ const { readFromFile, readAndAppend } = require('./helpers/fsUtils');
 const uuid = require('./helpers/uuid');
 
 const app = express();
-const PORT = 3002;
+const PORT = process.env.PORT || 3002;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
